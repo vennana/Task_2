@@ -11,23 +11,17 @@ from helpers import generate_unique_email
 @allure.feature("Обновление данных пользователя")
 class TestUserUpdate:
     
-    @allure.title("Обновление данных пользователя с авторизацией")
-    @allure.description("Проверка возможности обновления данных авторизованного пользователя")
-    @pytest.mark.parametrize("field,new_value", [
-        ("email", None),
-        ("name", "New Test User"),
-    ])
-    def test_update_user_authorized(self, create_and_delete_user, field, new_value):
+    @allure.title("Обновление email пользователя с авторизацией")
+    @allure.description("Проверка возможности обновления email авторизованного пользователя")
+    def test_update_user_email_authorized(self, create_and_delete_user):
 
         user_data = create_and_delete_user["user_data"]
         access_token = create_and_delete_user["access_token"]
         
-        if field == "email":
-            new_value = generate_unique_email()
+        new_email = generate_unique_email()
+        update_data = {"email": new_email}
         
-        update_data = {field: new_value}
-        
-        with allure.step(f"Отправить запрос на обновление поля {field} авторизованным пользователем"):
+        with allure.step("Отправить запрос на обновление email авторизованным пользователем"):
             response = requests.patch(
                 f"{AUTH_URL}/user",
                 headers={"Authorization": access_token},
@@ -37,14 +31,37 @@ class TestUserUpdate:
         with allure.step("Проверить код ответа"):
             assert response.status_code == 200
         
-        with allure.step("Проверить, что данные обновились"):
+        with allure.step("Проверить, что email обновился"):
             response_data = response.json()
             assert response_data["success"] is True
-            assert response_data["user"][field] == new_value
+            assert response_data["user"]["email"] == new_email
         
-        # Обновляем данные пользователя для удаления
-        if field == "email":
-            user_data["email"] = new_value
+        user_data["email"] = new_email
+    
+    @allure.title("Обновление имени пользователя с авторизацией")
+    @allure.description("Проверка возможности обновления имени авторизованного пользователя")
+    def test_update_user_name_authorized(self, create_and_delete_user):
+
+        user_data = create_and_delete_user["user_data"]
+        access_token = create_and_delete_user["access_token"]
+        
+        new_name = "New Test User"
+        update_data = {"name": new_name}
+        
+        with allure.step("Отправить запрос на обновление имени авторизованным пользователем"):
+            response = requests.patch(
+                f"{AUTH_URL}/user",
+                headers={"Authorization": access_token},
+                json=update_data
+            )
+        
+        with allure.step("Проверить код ответа"):
+            assert response.status_code == 200
+        
+        with allure.step("Проверить, что имя обновилось"):
+            response_data = response.json()
+            assert response_data["success"] is True
+            assert response_data["user"]["name"] == new_name
     
     @allure.title("Обновление данных пользователя без авторизации")
     @allure.description("Проверка ошибки при обновлении данных неавторизованного пользователя")
