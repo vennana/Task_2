@@ -35,7 +35,6 @@ class TestUserCreation:
             assert "refreshToken" in response_data
         
         # Удаление пользователя после теста
-        
         if response.status_code == 200:
             access_token = response.json().get("accessToken")
             if access_token:
@@ -48,8 +47,7 @@ class TestUserCreation:
     @allure.title("Создание пользователя, который уже зарегистрирован")
     @allure.description("Проверка ошибки при попытке создать существующего пользователя")
     def test_create_existing_user(self, create_and_delete_user):
-        assert create_and_delete_user is not None, "Не удалось создать пользователя"
-        
+
         user_data = create_and_delete_user["user_data"]
         
         with allure.step("Отправить повторный запрос на регистрацию того же пользователя"):
