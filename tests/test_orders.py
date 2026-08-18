@@ -2,7 +2,7 @@
 
 import allure
 import requests
-from config import BASE_URL, AUTH_URL
+from config import BASE_URL
 from data import TestData
 
 
@@ -13,8 +13,7 @@ class TestOrders:
     @allure.title("Создание заказа с авторизацией")
     @allure.description("Проверка успешного создания заказа авторизованным пользователем")
     def test_create_order_authorized(self, create_and_delete_user, valid_ingredients):
-        assert create_and_delete_user is not None, "Не удалось создать пользователя"
-        
+
         access_token = create_and_delete_user["access_token"]
         order_data = {"ingredients": valid_ingredients}
         
@@ -49,7 +48,7 @@ class TestOrders:
         with allure.step("Проверить код ответа"):
             assert response.status_code == 200
         
-        with allure.step("Проверить тело ответа (заказ создается даже без авторизации)"):
+        with allure.step("Проверить тело ответа"):
             response_data = response.json()
             assert response_data["success"] is True
             assert "name" in response_data
@@ -59,8 +58,7 @@ class TestOrders:
     @allure.title("Создание заказа с ингредиентами")
     @allure.description("Проверка создания заказа с валидными ингредиентами")
     def test_create_order_with_ingredients(self, create_and_delete_user, valid_ingredients):
-        assert create_and_delete_user is not None, "Не удалось создать пользователя"
-        
+
         access_token = create_and_delete_user["access_token"]
         order_data = {"ingredients": valid_ingredients}
         
@@ -82,8 +80,7 @@ class TestOrders:
     @allure.title("Создание заказа без ингредиентов")
     @allure.description("Проверка ошибки при создании заказа без ингредиентов")
     def test_create_order_without_ingredients(self, create_and_delete_user):
-        assert create_and_delete_user is not None, "Не удалось создать пользователя"
-        
+
         access_token = create_and_delete_user["access_token"]
         order_data = {"ingredients": []}
         
@@ -105,10 +102,8 @@ class TestOrders:
     @allure.title("Создание заказа с неверным хешем ингредиента")
     @allure.description("Проверка ошибки при создании заказа с невалидным хешем ингредиента")
     def test_create_order_invalid_ingredient(self, create_and_delete_user, valid_ingredients):
-        assert create_and_delete_user is not None, "Не удалось создать пользователя"
-        
+
         access_token = create_and_delete_user["access_token"]
-        # Заменяем один ингредиент на невалидный
         invalid_ingredients = valid_ingredients.copy()
         invalid_ingredients[0] = TestData.INVALID_INGREDIENT_HASH
         
