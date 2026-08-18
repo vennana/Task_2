@@ -18,7 +18,7 @@ def create_user():
     
     if response.status_code == 200:
         response_data = response.json()
-        return {
+        return {  # Исправлено ранее: return вместо yield
             "user_data": user_data,
             "access_token": response_data.get("accessToken", ""),
             "refresh_token": response_data.get("refreshToken", ""),
@@ -47,7 +47,7 @@ def create_and_delete_user(create_user, delete_user):
 
     user = create_user
     if user is None:
-        return None
+        return None  # Исправлено ранее: return вместо yield
     
     # Сохраняем данные для удаления
     user_data = user["user_data"]
