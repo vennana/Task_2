@@ -14,7 +14,7 @@ class TestUserCreation:
     
     @allure.title("Создание уникального пользователя")
     @allure.description("Проверка успешного создания нового пользователя")
-    def test_create_unique_user(self):
+    def test_create_unique_user(self, delete_user):
         user_data = generate_user_data()
         
         with allure.step("Отправить запрос на регистрацию пользователя"):
@@ -34,15 +34,9 @@ class TestUserCreation:
             assert "accessToken" in response_data
             assert "refreshToken" in response_data
         
-        # Удаление пользователя после теста
         if response.status_code == 200:
             access_token = response.json().get("accessToken")
-            if access_token:
-                requests.patch(
-                    f"{AUTH_URL}/user",
-                    headers={"Authorization": access_token},
-                    json={"email": user_data["email"]}
-                )
+            delete_user(user_data, access_token)
     
     @allure.title("Создание пользователя, который уже зарегистрирован")
     @allure.description("Проверка ошибки при попытке создать существующего пользователя")
