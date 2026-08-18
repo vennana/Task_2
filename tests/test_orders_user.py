@@ -2,7 +2,7 @@
 
 import allure
 import requests
-from config import BASE_URL, AUTH_URL
+from config import BASE_URL
 from data import TestData
 
 
@@ -13,8 +13,7 @@ class TestUserOrders:
     @allure.title("Получение заказов авторизованного пользователя")
     @allure.description("Проверка получения списка заказов авторизованным пользователем")
     def test_get_user_orders_authorized(self, create_and_delete_user):
-        assert create_and_delete_user is not None, "Не удалось создать пользователя"
-        
+
         access_token = create_and_delete_user["access_token"]
         
         with allure.step("Отправить запрос на получение заказов пользователя"):
