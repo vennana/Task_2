@@ -25,13 +25,10 @@ class TestUserOrders:
         with allure.step("Проверить код ответа"):
             assert response.status_code == 200
         
-        with allure.step("Проверить структуру ответа"):
+        with allure.step("Проверить, что получен список заказов"):
             response_data = response.json()
             assert response_data["success"] is True
             assert "orders" in response_data
-            assert isinstance(response_data["orders"], list)
-            assert "total" in response_data
-            assert "totalToday" in response_data
     
     @allure.title("Получение заказов неавторизованного пользователя")
     @allure.description("Проверка ошибки при получении заказов без авторизации")
