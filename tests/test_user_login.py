@@ -14,8 +14,7 @@ class TestUserLogin:
     @allure.title("Логин под существующим пользователем")
     @allure.description("Проверка успешного входа существующего пользователя")
     def test_login_existing_user(self, create_and_delete_user):
-        assert create_and_delete_user is not None, "Не удалось создать пользователя"
-        
+
         user_data = create_and_delete_user["user_data"]
         
         with allure.step("Отправить запрос на логин"):
@@ -40,12 +39,12 @@ class TestUserLogin:
     
     @allure.title("Логин с неверными учетными данными")
     @allure.description("Проверка ошибки при входе с неверным email и паролем")
-    @pytest.mark.parametrize("email,password,expected_message", [
-        ("invalid@email.com", "TestPassword123", TestData.INVALID_CREDENTIALS),
-        ("test_user@yandex.ru", "wrongpassword", TestData.INVALID_CREDENTIALS),
-        ("invalid@email.com", "wrongpassword", TestData.INVALID_CREDENTIALS),
+    @pytest.mark.parametrize("email,password", [
+        ("invalid@email.com", "TestPassword123"),
+        ("test_user@yandex.ru", "wrongpassword"),
+        ("invalid@email.com", "wrongpassword"),
     ])
-    def test_login_invalid_credentials(self, email, password, expected_message):
+    def test_login_invalid_credentials(self, email, password):
         with allure.step(f"Отправить запрос на логин с данными: {email}, {password}"):
             response = requests.post(
                 f"{AUTH_URL}/login",
@@ -61,4 +60,4 @@ class TestUserLogin:
         with allure.step("Проверить сообщение об ошибке"):
             response_data = response.json()
             assert response_data["success"] is False
-            assert expected_message in response_data["message"]
+            assert TestData.INVALID_CREDENTIALS in response_data["message"]
