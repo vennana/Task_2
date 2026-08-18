@@ -14,12 +14,11 @@ class TestUserUpdate:
     @allure.title("Обновление данных пользователя с авторизацией")
     @allure.description("Проверка возможности обновления данных авторизованного пользователя")
     @pytest.mark.parametrize("field,new_value", [
-        ("email", None),  # будет сгенерирован новый email
+        ("email", None),
         ("name", "New Test User"),
     ])
     def test_update_user_authorized(self, create_and_delete_user, field, new_value):
-        assert create_and_delete_user is not None, "Не удалось создать пользователя"
-        
+
         user_data = create_and_delete_user["user_data"]
         access_token = create_and_delete_user["access_token"]
         
@@ -54,8 +53,7 @@ class TestUserUpdate:
         ("name", "New Unauthorized User"),
     ])
     def test_update_user_unauthorized(self, create_user, field, new_value):
-        assert create_user is not None, "Не удалось создать пользователя"
-        
+
         update_data = {field: new_value}
         
         with allure.step(f"Отправить запрос на обновление поля {field} без авторизации"):
